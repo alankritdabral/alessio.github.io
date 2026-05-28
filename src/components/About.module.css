@@ -1,0 +1,74 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: center;
+}
+
+.imageWrapper {
+  position: relative;
+  padding-bottom: 50px;
+}
+
+.mainImg {
+  width: 90%;
+  height: auto;
+  display: block;
+}
+
+.subImg {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 50%;
+  border: 15px solid white;
+  box-shadow: var(--shadow);
+}
+
+.content h2 {
+  margin-bottom: 2rem;
+}
+
+.content p {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.signature {
+  margin-top: 3rem;
+}
+
+.signatureText {
+  font-family: var(--font-serif);
+  font-size: 2.5rem !important;
+  color: var(--accent) !important;
+  margin-bottom: -0.5rem !important;
+  font-style: italic;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+.signature p {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    text-align: center;
+  }
+  
+  .imageWrapper {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .signature {
+    margin: 3rem auto 0;
+  }
+}
