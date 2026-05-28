@@ -8,7 +8,7 @@ const Footer = () => {
         <div className={styles.grid}>
           <div className={styles.info}>
             <Link href="/" className={styles.logo}>
-              <span className={styles.logoMain}>ALESSIO'S</span>
+              <span className={styles.logoMain}>ALESSIO&apos;S</span>
               <span className={styles.logoSub}>CAFE & PIZZERIA</span>
             </Link>
             <p className={styles.description}>
@@ -32,7 +32,7 @@ const Footer = () => {
           </div>
         </div>
         <div className={styles.bottom}>
-          <p>&copy; {new Date().getFullYear()} Alessio's Cafe & Pizzeria. Elegant Italian Dining.</p>
+          <p>&copy; {new Date().getFullYear()} Alessio&apos;s Cafe & Pizzeria. Elegant Italian Dining.</p>
         </div>
       </div>
     </footer>

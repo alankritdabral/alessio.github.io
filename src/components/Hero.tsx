@@ -1,9 +1,10 @@
 import Link from 'next/link';
+import { assetPath } from '@/lib/assets';
 import styles from './Hero.module.css';
 
 const Hero = () => {
   return (
-    <section className={styles.hero} style={{ backgroundImage: "url('/images/unnamed.jpg')" }}>
+    <section className={styles.hero} style={{ backgroundImage: `url('${assetPath('/images/unnamed.jpg')}')` }}>
       <div className={styles.overlay}></div>
       <div className={`container ${styles.container}`}>
         <div className={styles.content}>
