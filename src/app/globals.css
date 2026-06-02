@@ -76,6 +76,19 @@ button {
   text-align: center;
 }
 
+.btn-lg {
+  padding: 1.25rem 3.5rem;
+  font-size: 1rem;
+}
+
+.btn-glow {
+  box-shadow: 0 0 20px rgba(197, 160, 89, 0.4);
+}
+
+.btn-glow:hover {
+  box-shadow: 0 0 30px rgba(197, 160, 89, 0.6);
+}
+
 .btn-primary {
   background: var(--secondary);
   color: white;

@@ -12,14 +12,14 @@ const Header = () => {
         <nav className={styles.nav}>
           <ul>
             <li><Link href="/">Home</Link></li>
-            <li><Link href="#about">Our Story</Link></li>
-            <li><Link href="#menu">Menu</Link></li>
-            <li><Link href="#booking">Reservation</Link></li>
-            <li><Link href="#locations">Contact</Link></li>
+            <li><Link href="/about">Our Story</Link></li>
+            <li><Link href="/menu">Menu</Link></li>
+            <li><Link href="/contact">Events & Booking</Link></li>
+            <li><Link href="/locations">Contact</Link></li>
           </ul>
         </nav>
         <div className={styles.actions}>
-          <Link href="#booking" className="btn btn-primary">Book a Table</Link>
+          <Link href="/menu" className="btn btn-primary">Order Now</Link>
         </div>
       </div>
     </header>

@@ -28,8 +28,8 @@ const About = () => {
               From our artisan pizzas baked to perfection to our delicious pasta and refreshing beverages, every item on our menu is a celebration of flavors. Join us for a taste of fine dining right here in your neighborhood.
             </p>
             <div className={styles.signature}>
-              <p className={styles.signatureText}>Luca Alessio</p>
-              <p>Founder - Luca Alessio</p>
+              <p className={styles.signatureText}>Anshul Parmar</p>
+              <p>Founder - Anshul Parmar</p>
             </div>
           </div>
         </div>

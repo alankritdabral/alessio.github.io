@@ -9,7 +9,7 @@ const Locations = () => {
         <div className={styles.grid}>
           <div className={styles.content}>
             <span className={styles.subtitle}>Find Us</span>
-            <h2 className={styles.title}>Our Locations</h2>
+            <h2 className={styles.title}>Contact & Location</h2>
             <div className={styles.info}>
               <div className={styles.item}>
                 <h4>Alessio&apos;s Cafe & Pizzeria</h4>
@@ -31,10 +31,16 @@ const Locations = () => {
             </div>
           </div>
           <div className={styles.mapWrapper}>
-            {/* Placeholder for Map */}
-            <div className={styles.mapPlaceholder}>
-              <span>Map View</span>
-            </div>
+            <iframe 
+              src="https://maps.google.com/maps?q=Alessio's%20Cafe%20%26%20Pizzeria%20Dehradun&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+              width="100%" 
+              height="100%" 
+              style={{ border: 0 }} 
+              allowFullScreen={true} 
+              loading="lazy" 
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Alessio's Cafe & Pizzeria Location"
+            ></iframe>
           </div>
         </div>
       </div>

@@ -1,1 +1,1 @@
-export const assetPath = (path: `/${string}`) => `/alessio.github.io${path}`;
+export const assetPath = (path: `/${string}`) => path;

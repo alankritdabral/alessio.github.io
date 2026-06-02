@@ -8,9 +8,9 @@ const BookingForm = () => {
       <div className={`container ${styles.container}`}>
         <div className={styles.wrapper}>
           <div className="text-center mb-4">
-            <span className="section-subtitle">Reserve a Table</span>
-            <h2 className="section-title" style={{ color: 'white' }}>Book Your Table Online</h2>
-            <p className={styles.desc}>Secure your spot for an unforgettable dining experience. For parties larger than 8, please call us directly.</p>
+            <span className="section-subtitle">Reserve Your Space</span>
+            <h2 className="section-title" style={{ color: 'white' }}>Bookings, Parties & Venues</h2>
+            <p className={styles.desc}>Secure your spot for an unforgettable dining experience, or book our venue for your special events and parties.</p>
           </div>
           <form className={styles.form}>
             <div className={styles.row}>

@@ -1,60 +1,150 @@
-.subtitle {
-  color: var(--primary);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 0.875rem;
-  display: block;
-  margin-bottom: 0.5rem;
+.sliderWrapper {
+  width: 100%;
+  padding: 20px 0 50px;
 }
 
-.title {
-  font-size: 2.5rem;
-  color: var(--accent);
+.reviewsSwiper {
+  width: 100%;
+  padding-bottom: 50px !important;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+.swiperSlide {
+  height: auto;
+  display: flex;
 }
 
-.card {
+.reviewCard {
   background: white;
-  padding: 2rem;
-  border-radius: 15px;
+  padding: 24px;
+  border-radius: 12px;
   box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  width: 100%;
+  height: 320px; /* Reduced height for a more compact look */
+  border: 1px solid var(--border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.content {
-  font-style: italic;
-  color: var(--foreground);
-  margin-bottom: 2rem;
-  font-size: 1.125rem;
+.reviewCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
 }
 
-.author {
+.authorContainer {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  margin-bottom: 16px;
+  flex-shrink: 0;
 }
 
-.avatar {
-  width: 50px;
-  height: 50px;
+.authorPhoto {
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
+  margin-right: 12px;
   object-fit: cover;
+  border: 2px solid var(--primary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.author h4 {
+.authorInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.authorNameRow {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
   font-size: 1rem;
-  margin-bottom: 0.1rem;
+  color: var(--secondary);
 }
 
-.author span {
-  font-size: 0.875rem;
-  color: var(--muted);
+.verifiedTick {
+  width: 16px;
+  height: 16px;
+  margin-left: 6px;
+  fill: #4285F4; /* Standard Google Blue */
+}
+
+.rating {
+  color: #fbbc05;
+  font-size: 1rem;
+  margin-top: 2px;
+}
+
+.reviewText {
+  line-height: 1.5;
+  color: #555;
+  flex-grow: 1;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+  font-style: italic;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Custom Scrollbar for Review Text */
+.reviewText::-webkit-scrollbar {
+  width: 4px;
+}
+
+.reviewText::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.reviewText::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+.reviewText::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+.googleLink {
+  display: inline-flex;
+  align-items: center;
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.googleLink:hover {
+  text-decoration: underline;
+  color: var(--primary-hover);
+}
+
+.googleLink svg {
+  margin-right: 8px;
+}
+
+/* Swiper Pagination Customization */
+.paginationBullet {
+  background: #dadce0 !important;
+  opacity: 1 !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  border-radius: 50% !important;
+  margin: 0 5px !important;
+  cursor: pointer !important;
+}
+
+.paginationBulletActive {
+  background: var(--primary) !important;
+  width: 24px !important;
+  border-radius: 5px !important;
+}
+
+@media (max-width: 768px) {
+  .reviewCard {
+    padding: 20px;
+    min-height: auto;
+  }
 }

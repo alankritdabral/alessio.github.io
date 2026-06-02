@@ -12,7 +12,7 @@ const Hero = () => {
           <h1>Experience <br /> The Taste of Italy</h1>
           <p>Artisan pizza, delicious pasta, and refreshing shakes. Discover the finest flavors in the heart of your neighborhood.</p>
           <div className={styles.cta}>
-            <Link href="#menu" className="btn btn-primary">View Menu</Link>
+            <Link href="#menu" className="btn btn-primary btn-lg btn-glow">Order Now</Link>
             <Link href="#booking" className="btn btn-outline" style={{ color: 'white', borderColor: 'white' }}>Reservation</Link>
           </div>
         </div>
