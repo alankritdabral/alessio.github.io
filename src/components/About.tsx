@@ -8,12 +8,12 @@ const About = () => {
         <div className={styles.grid}>
           <div className={styles.imageWrapper}>
             <img 
-              src={assetPath('/images/unnamed (1).jpg')}
+              src={assetPath('/images/unnamed-1.jpg')}
               alt="Restaurant Interior" 
               className={styles.mainImg}
             />
             <img 
-              src={assetPath('/images/unnamed (2).jpg')}
+              src={assetPath('/images/unnamed-2.jpg')}
               alt="Chef" 
               className={styles.subImg}
             />

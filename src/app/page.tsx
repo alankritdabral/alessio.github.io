@@ -20,7 +20,7 @@ export default function Home() {
       <Testimonials />
       <Slideshow />
       <About />
-      <Menu />
+      <Menu isOrdering={false} />
       <BookingForm />
       <Locations />
     </>

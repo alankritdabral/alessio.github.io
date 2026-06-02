@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react';
 import { assetPath } from '@/lib/assets';
 import styles from './Slideshow.module.css';
 
-const images: (`/${string}`)[] = [
-  '/images/unnamed (3).jpg',
-  '/images/unnamed (4).jpg',
-  '/images/unnamed (7).jpg',
-  '/images/unnamed10.jpg',
+const images: string[] = [
+  '/images/unnamed-3.jpg',
+  '/images/unnamed-4.jpg',
+  '/images/unnamed-7.jpg',
+  '/images/unnamed-10.jpg',
 ];
 
 const Slideshow = () => {

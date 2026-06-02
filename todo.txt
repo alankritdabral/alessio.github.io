@@ -5,3 +5,47 @@ parties/venu
 swiggy zomato
 reviews
 acontact now 
+
+
+
+  To make the payment system work in production, you must complete these steps in your
+  Supabase Dashboard:
+
+  1. Configure Environment Variables (Secrets)
+  Go to your Supabase Project Settings -> Edge Functions -> Secrets and add:
+   * PAYTM_MID: Your Merchant ID from Paytm Dashboard.
+   * PAYTM_MERCHANT_KEY: Your Merchant Key from Paytm Dashboard.
+   * PAYTM_ENV: Set to STAGING for testing or PRODUCTION for live payments.
+   * PAYTM_WEBSITE: WEBSTAGING or your production website name.
+   * FRONTEND_URL: https://alessio.github.io (or your custom domain).
+   * SUPABASE_URL: Your project URL.
+   * SUPABASE_SERVICE_ROLE_KEY: Your service_role API key.
+
+  2. Deploy Edge Functions
+  Using the Supabase CLI on your local machine, run:
+
+   1 supabase functions deploy paytm-initiate
+   2 supabase functions deploy paytm-callback
+
+  3. Update Frontend Env Variables
+  In your .env.local or GitHub Actions Secrets for the frontend:
+   * NEXT_PUBLIC_PAYTM_ENV: STAGING or PRODUCTION.
+   * NEXT_PUBLIC_SUPABASE_URL: Your project URL.
+   * NEXT_PUBLIC_SUPABASE_ANON_KEY: Your anon API key.
+
+  4. Database Permissions (RLS)
+  Ensure your orders and order_items tables have appropriate Row Level Security (RLS)
+  policies:
+   * Insert: Allow anyone (or authenticated users) to insert orders.
+   * Select: 
+       * Allow users to select their own order (can use a unique ID/session).
+       * Allow service_role (Edge Functions) to select/update all orders.
+       * Allow Admin users (via Supabase Auth) to select/update all orders.
+
+  ---
+
+  Summary of Final Features Added:
+   * ✅ Paytm PG Integration: Real payment flow with secure checksums.
+   * ✅ Real-time Admin POS: Updates instantly when an order is paid.
+   * ✅ Kitchen Audio Chime: Sounds a "ding" when a new paid order arrives.
+   * ✅ Professional Receipts: Customers can now Print or Download PDF receipts.

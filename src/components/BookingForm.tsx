@@ -3,7 +3,7 @@ import styles from './BookingForm.module.css';
 
 const BookingForm = () => {
   return (
-    <section className={styles.booking} id="booking" style={{ backgroundImage: `url('${assetPath('/images/unnamed (5).jpg')}')` }}>
+    <section className={styles.booking} id="booking" style={{ backgroundImage: `url('${assetPath('/images/unnamed-5.jpg')}')` }}>
       <div className={styles.overlay}></div>
       <div className={`container ${styles.container}`}>
         <div className={styles.wrapper}>

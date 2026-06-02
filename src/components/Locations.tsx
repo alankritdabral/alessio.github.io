@@ -3,7 +3,7 @@ import styles from './Locations.module.css';
 
 const Locations = () => {
   return (
-    <section className={styles.locations} id="locations" style={{ backgroundImage: `url('${assetPath('/images/unnamed10.jpg')}')` }}>
+    <section className={styles.locations} id="locations" style={{ backgroundImage: `url('${assetPath('/images/unnamed-10.jpg')}')` }}>
       <div className={styles.overlay}></div>
       <div className={`container ${styles.container}`}>
         <div className={styles.grid}>

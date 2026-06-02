@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BottomNav from "@/components/BottomNav";
 import StructuredData from "@/components/StructuredData";
+import CartManager from "@/components/CartManager";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -54,6 +55,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${playfair.variable}`}>
         <StructuredData />
         <Header />
+        <CartManager />
         <main>{children}</main>
         <Footer />
         <BottomNav />

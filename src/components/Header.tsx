@@ -1,7 +1,18 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import styles from './Header.module.css';
+import { ShoppingCart } from 'lucide-react';
+import { useCartStore } from '@/store/useCartStore';
 
 const Header = () => {
+  const pathname = usePathname();
+  const { toggleCart, getTotalItems } = useCartStore();
+  const itemCount = getTotalItems();
+
+  const isOrderPage = pathname === '/order';
+
   return (
     <header className={styles.header}>
       <div className={`container ${styles.container}`}>
@@ -19,7 +30,13 @@ const Header = () => {
           </ul>
         </nav>
         <div className={styles.actions}>
-          <Link href="/menu" className="btn btn-primary">Order Now</Link>
+          {isOrderPage && (
+            <button className={styles.cartBtn} onClick={() => toggleCart(true)}>
+              <ShoppingCart size={20} />
+              {itemCount > 0 && <span className={styles.badge}>{itemCount}</span>}
+            </button>
+          )}
+          <Link href="/order" className="btn btn-primary d-none-sm">Order Now</Link>
         </div>
       </div>
     </header>

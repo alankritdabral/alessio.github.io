@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function MenuPage() {
-  return <Menu />;
+  return <Menu isOrdering={false} />;
 }

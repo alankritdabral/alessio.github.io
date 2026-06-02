@@ -9,7 +9,7 @@ const BottomNav = () => {
         <Home size={20} />
         <span>Home</span>
       </Link>
-      <Link href="/menu" className={styles.navItem}>
+      <Link href="/order" className={styles.navItem}>
         <Utensils size={20} />
         <span>Order</span>
       </Link>
