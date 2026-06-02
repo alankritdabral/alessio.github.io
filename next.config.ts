@@ -1,14 +1,9 @@
 import type { NextConfig } from "next";
 
-const isGitHubPages = process.env.GITHUB_ACTIONS === 'true';
-const basePath = isGitHubPages ? '/alessio.github.io' : '';
-
 const nextConfig: NextConfig = {
   output: 'export',
-  basePath: basePath,
-  env: {
-    NEXT_PUBLIC_BASE_PATH: basePath,
-  },
+  // Note: Since the repo is named 'alessio.github.io', it is served at the root domain.
+  // We don't need a basePath prefix.
   images: {
     unoptimized: true,
   },
