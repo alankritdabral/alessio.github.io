@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/private/',
     },
-    sitemap: 'https://alessio.github.io/sitemap.xml',
+    sitemap: 'https://alankritdabral.github.io/alessio.github.io/sitemap.xml',
   };
 }

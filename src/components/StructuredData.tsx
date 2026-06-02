@@ -3,8 +3,8 @@ export default function StructuredData() {
     "@context": "https://schema.org",
     "@type": "Restaurant",
     "name": "Alessio's Cafe",
-    "image": "https://alessio.github.io/images/unnamed.jpg",
-    "url": "https://alessio.github.io",
+    "image": "https://alankritdabral.github.io/alessio.github.io/images/unnamed.jpg",
+    "url": "https://alankritdabral.github.io/alessio.github.io",
     "telephone": "+917017615647",
     "address": {
       "@type": "PostalAddress",

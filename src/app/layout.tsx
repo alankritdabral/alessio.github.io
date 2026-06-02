@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://alessio.github.io",
+    url: "https://alankritdabral.github.io/alessio.github.io",
     title: "Alessio's Cafe | Pizza | Pasta | Raipur, Dehradun",
     description: "Authentic Italian cafe in Raipur, Dehradun. Experience the best artisan pizza, pasta, and shakes.",
     siteName: "Alessio's Cafe",

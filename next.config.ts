@@ -1,9 +1,12 @@
 import type { NextConfig } from "next";
 
+const isProd = process.env.NODE_ENV === 'production';
+
 const nextConfig: NextConfig = {
   output: 'export',
-  // Note: Since the repo is named 'alessio.github.io', it is served at the root domain.
-  // We don't need a basePath prefix.
+  // Since the repo is named 'alessio.github.io' but hosted by 'alankritdabral',
+  // we need a basePath prefix for production.
+  basePath: isProd ? '/alessio.github.io' : '',
   images: {
     unoptimized: true,
   },

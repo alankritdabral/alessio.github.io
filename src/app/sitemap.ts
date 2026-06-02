@@ -3,7 +3,7 @@ import { MetadataRoute } from 'next';
 export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://alessio.github.io';
+  const baseUrl = 'https://alankritdabral.github.io/alessio.github.io';
   
   return [
     {

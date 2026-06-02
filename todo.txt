@@ -17,7 +17,7 @@ acontact now
    * PAYTM_MERCHANT_KEY: Your Merchant Key from Paytm Dashboard.
    * PAYTM_ENV: Set to STAGING for testing or PRODUCTION for live payments.
    * PAYTM_WEBSITE: WEBSTAGING or your production website name.
-   * FRONTEND_URL: https://alessio.github.io (or your custom domain).
+   * FRONTEND_URL: https://alankritdabral.github.io/alessio.github.io
    * SUPABASE_URL: Your project URL.
    * SUPABASE_SERVICE_ROLE_KEY: Your service_role API key.
 
