@@ -7,13 +7,37 @@ import { assetPath } from '@/lib/assets';
 import { useCartStore, Product } from '@/store/useCartStore';
 import { Plus, ShoppingBag, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 interface MenuProps {
   isOrdering?: boolean;
 }
 
+const CATEGORY_ORDER = [
+  'Pizza',
+  'Pasta & Salads',
+  'Breads',
+  'Burgers & Wraps',
+  'Sandwiches',
+  'Beverages',
+  'Sides & Snacks'
+];
+
+const CATEGORY_DISPLAY_MAP: { [key: string]: string } = {
+  'Pizza': 'Pizza',
+  'Pasta & Salads': 'Pasta & Salad',
+  'Breads': 'Bread',
+  'Burgers & Wraps': 'Burger & Wrap',
+  'Sandwiches': 'Sandwich',
+  'Beverages': 'Beverages',
+  'Sides & Snacks': 'Side & Snacks'
+};
+
 const Menu = ({ isOrdering = true }: MenuProps) => {
-  const [activeCategory, setActiveCategory] = useState('');
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get('category') || '';
+  
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +59,7 @@ const Menu = ({ isOrdering = true }: MenuProps) => {
       if (data) {
         setProducts(data);
         if (data.length > 0) {
-          setActiveCategory(prev => prev || data[0].category);
+          setActiveCategory(prev => prev || initialCategory || data[0].category);
         }
       }
     } catch (err) {
@@ -44,16 +68,25 @@ const Menu = ({ isOrdering = true }: MenuProps) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [initialCategory]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProducts();
   }, [fetchProducts]);
 
-  const categories = useMemo(() => 
-    Array.from(new Set(products.map(p => p.category))),
-  [products]);
+  const categories = useMemo(() => {
+    const uniqueCategories = Array.from(new Set(products.map(p => p.category)));
+    return uniqueCategories.sort((a, b) => {
+      const indexA = CATEGORY_ORDER.indexOf(a);
+      const indexB = CATEGORY_ORDER.indexOf(b);
+      // Put unknown categories at the end
+      if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+      return indexA - indexB;
+    });
+  }, [products]);
   
   // Group products by base name (removing (Half), (Full), etc.)
   const groupedProducts = useMemo(() => {
@@ -106,7 +139,7 @@ const Menu = ({ isOrdering = true }: MenuProps) => {
                   className={`${styles.tabBtn} ${activeCategory === category ? styles.active : ''}`}
                   onClick={() => setActiveCategory(category)}
                 >
-                  {category}
+                  {CATEGORY_DISPLAY_MAP[category] || category}
                 </button>
               ))}
             </div>
@@ -138,12 +171,18 @@ const Menu = ({ isOrdering = true }: MenuProps) => {
                           <span className={styles.dots}></span>
                           <div className={styles.priceContainer}>
                             {variants.length > 1 ? (
-                              <span className={styles.price}>
+                              <div className={styles.variantPrices}>
                                 {variants
                                   .sort((a, b) => a.price - b.price)
-                                  .map(v => `₹${v.price}`)
-                                  .join(' / ')}
-                              </span>
+                                  .map(v => (
+                                    <span 
+                                      key={v.id} 
+                                      className={`${styles.price} ${selectedId === v.id ? styles.activePrice : styles.inactivePrice}`}
+                                    >
+                                      ₹{v.price}
+                                    </span>
+                                  ))}
+                              </div>
                             ) : (
                               <>
                                 {item.discount_percentage > 0 && (
@@ -161,38 +200,40 @@ const Menu = ({ isOrdering = true }: MenuProps) => {
                         <p className={styles.description}>{item.description}</p>
                         
                         <div className={styles.itemFooter}>
-                          {variants.length > 1 && (
-                            <div className={styles.sizeSelector}>
-                              {variants.map(v => {
-                                const sizeMatch = v.name.match(/\((Half|Full|Medium|Large|Regular)\)$/);
-                                const sizeLabel = sizeMatch ? sizeMatch[1] : v.name;
-                                return (
-                                  <button
-                                    key={v.id}
-                                    className={`${styles.sizeBtn} ${selectedId === v.id ? styles.activeSize : ''}`}
-                                    onClick={() => setSelectedVariants(prev => ({ ...prev, [baseName]: v.id }))}
-                                  >
-                                    {sizeLabel}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          )}
+                          <div className={styles.footerLeft}>
+                            {variants.length > 1 && (
+                              <div className={styles.sizeSelector}>
+                                {variants.map(v => {
+                                  const sizeMatch = v.name.match(/\((Half|Full|Medium|Large|Regular)\)$/);
+                                  const sizeLabel = sizeMatch ? sizeMatch[1] : v.name;
+                                  return (
+                                    <button
+                                      key={v.id}
+                                      className={`${styles.sizeBtn} ${selectedId === v.id ? styles.activeSize : ''}`}
+                                      onClick={() => setSelectedVariants(prev => ({ ...prev, [baseName]: v.id }))}
+                                    >
+                                      {sizeLabel}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
 
-                          {isOrdering && (
-                            <div className={styles.actionContainer}>
-                              {!item.in_stock ? (
-                                <span className={styles.statusBadge}>Out of Stock</span>
-                              ) : (
-                                <button 
-                                  className={styles.addBtn}
-                                  onClick={() => addItem(item)}
-                                >
-                                  <Plus size={16} /> Add to Cart
-                                </button>
-                              )}
-                            </div>
-                          )}
+                            {isOrdering && (
+                              <div className={styles.actionContainer}>
+                                {!item.in_stock ? (
+                                  <span className={styles.statusBadge}>Out of Stock</span>
+                                ) : (
+                                  <button 
+                                    className={styles.addBtn}
+                                    onClick={() => addItem(item)}
+                                  >
+                                    <Plus size={16} /> Add
+                                  </button>
+                                )}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>

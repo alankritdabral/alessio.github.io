@@ -1,5 +1,6 @@
 .hero {
   height: 90vh;
+  min-height: 600px;
   background-size: cover;
   background-position: center;
   position: relative;
@@ -16,7 +17,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6));
 }
 
 .container {
@@ -25,34 +26,58 @@
 }
 
 .content h1 {
-  font-size: 5rem;
+  font-size: 6rem;
   color: white;
   margin-bottom: 2rem;
-  line-height: 1.1;
-  letter-spacing: -1px;
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 .content p {
   font-size: 1.25rem;
-  max-width: 700px;
+  max-width: 650px;
   margin: 0 auto 3rem;
-  opacity: 0.9;
+  opacity: 0.95;
+  line-height: 1.6;
+  font-weight: 400;
 }
 
 .cta {
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
   justify-content: center;
+}
+
+@media (max-width: 992px) {
+  .content h1 {
+    font-size: 4.5rem;
+  }
 }
 
 @media (max-width: 768px) {
   .hero {
-    height: 80vh;
+    height: 85vh;
   }
   .content h1 {
-    font-size: 3rem;
+    font-size: 3.5rem;
   }
   .content p {
-    font-size: 1.1rem;
+    font-size: 1.125rem;
+    margin-bottom: 2.5rem;
+  }
+  .cta {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .cta a {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content h1 {
+    font-size: 2.75rem;
   }
 }

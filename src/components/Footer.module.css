@@ -1,54 +1,56 @@
 .footer {
-  background: #111;
+  background: var(--secondary);
   color: white;
-  padding: 8rem 0 3rem;
+  padding: 8rem 0 4rem;
 }
 
 .grid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
-  gap: 6rem;
+  gap: 5rem;
   margin-bottom: 5rem;
 }
 
 .logo {
   display: flex;
   flex-direction: column;
-  line-height: 1;
+  line-height: 1.1;
   text-decoration: none;
   margin-bottom: 2rem;
 }
 
 .logoMain {
   font-family: var(--font-serif);
-  font-size: 2.5rem;
+  font-size: 2.25rem;
   font-weight: 700;
   color: white;
-  letter-spacing: 4px;
+  letter-spacing: 0.05em;
 }
 
 .logoSub {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--primary);
-  letter-spacing: 6px;
+  letter-spacing: 0.4em;
   text-transform: uppercase;
   margin-top: 5px;
 }
 
 .description {
-  color: #999;
+  color: rgba(255, 255, 255, 0.6);
   max-width: 400px;
-  line-height: 2;
+  line-height: 1.8;
+  font-size: 0.95rem;
 }
 
 .links h4, .contact h4 {
   margin-bottom: 2rem;
-  font-size: 1.25rem;
-  font-family: var(--font-serif);
-  color: var(--primary);
+  font-size: 1.125rem;
+  font-family: var(--font-sans);
+  color: white;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 0.15em;
+  font-weight: 700;
 }
 
 .links ul li {
@@ -56,36 +58,58 @@
 }
 
 .links a {
-  color: #999;
-  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.1em;
+  transition: var(--transition);
 }
 
 .links a:hover {
   color: var(--primary);
+  padding-left: 5px;
 }
 
 .contact p {
-  color: #999;
+  color: rgba(255, 255, 255, 0.6);
   margin-bottom: 0.75rem;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
 }
 
 .bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   padding-top: 3rem;
   text-align: center;
-  color: #666;
-  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 0.2em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.adminLink {
+  color: rgba(255, 255, 255, 0.15);
+  text-decoration: none;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  transition: var(--transition);
+}
+
+.adminLink:hover {
+  color: var(--primary);
 }
 
 @media (max-width: 992px) {
+  .footer {
+    padding: 6rem 0 3rem;
+  }
   .grid {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 4rem;
     text-align: center;
   }
   

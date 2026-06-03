@@ -1,5 +1,6 @@
 import Menu from "@/components/Menu";
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Our Menu",
@@ -10,5 +11,9 @@ export const metadata: Metadata = {
 };
 
 export default function MenuPage() {
-  return <Menu isOrdering={false} />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Menu isOrdering={false} />
+    </Suspense>
+  );
 }

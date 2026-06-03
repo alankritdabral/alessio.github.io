@@ -1,28 +1,36 @@
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6rem;
+  gap: 5rem;
   align-items: center;
 }
 
 .imageWrapper {
   position: relative;
-  padding-bottom: 50px;
+  padding-bottom: 60px;
 }
 
 .mainImg {
   width: 90%;
   height: auto;
   display: block;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
 .subImg {
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 50%;
-  border: 15px solid white;
-  box-shadow: var(--shadow);
+  width: 55%;
+  border: 12px solid white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  transition: var(--transition-slow);
+}
+
+.subImg:hover {
+  transform: translateY(-10px);
 }
 
 .content h2 {
@@ -31,27 +39,29 @@
 
 .content p {
   margin-bottom: 1.5rem;
-  font-size: 1.1rem;
+  font-size: 1.125rem;
+  color: var(--muted);
+  line-height: 1.7;
 }
 
 .signature {
-  margin-top: 3rem;
+  margin-top: 3.5rem;
 }
 
 .signatureText {
   font-family: var(--font-serif);
-  font-size: 2.5rem !important;
-  color: var(--accent) !important;
-  margin-bottom: -0.5rem !important;
+  font-size: 3rem !important;
+  color: var(--secondary) !important;
+  margin-bottom: -0.25rem !important;
   font-style: italic;
   text-transform: none !important;
   letter-spacing: normal !important;
 }
 
 .signature p {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 0.2em;
   color: var(--primary);
   font-weight: 700;
 }
@@ -66,9 +76,14 @@
   .imageWrapper {
     max-width: 500px;
     margin: 0 auto;
+    padding-bottom: 40px;
   }
   
   .signature {
     margin: 3rem auto 0;
+  }
+
+  .content p {
+    font-size: 1.05rem;
   }
 }

@@ -146,6 +146,12 @@
   background: var(--bg-alt);
 }
 
+@media (max-width: 768px) {
+  .footer {
+    padding-bottom: calc(1.5rem + 65px); /* Ensure checkout button is above BottomNav */
+  }
+}
+
 .totals {
   margin-bottom: 1.5rem;
 }

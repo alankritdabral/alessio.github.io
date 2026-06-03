@@ -9,12 +9,12 @@ import CartManager from "@/components/CartManager";
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-inter",
 });
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-serif",
+  variable: "--font-playfair",
 });
 
 export const metadata: Metadata = {

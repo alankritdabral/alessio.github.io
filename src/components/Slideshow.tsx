@@ -1,8 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination } from 'swiper/modules';
 import { assetPath } from '@/lib/assets';
 import styles from './Slideshow.module.css';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
 
 const images: string[] = [
   '/images/unnamed-3.jpg',
@@ -12,41 +18,40 @@ const images: string[] = [
 ];
 
 const Slideshow = () => {
-  const [current, setCurrent] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % images.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
-
   return (
     <section className={styles.slideshow}>
-      <div className={styles.container}>
+      <Swiper
+        modules={[Autoplay, Pagination]}
+        spaceBetween={0}
+        slidesPerView={1}
+        autoplay={{
+          delay: 5000,
+          disableOnInteraction: false,
+        }}
+        pagination={{
+          clickable: true,
+          bulletActiveClass: styles.dotActive,
+          bulletClass: styles.dot,
+        }}
+        loop={true}
+        className={styles.swiper}
+      >
         {images.map((img, index) => (
-          <div
-            key={img}
-            className={`${styles.slide} ${index === current ? styles.active : ''}`}
-            style={{ backgroundImage: `url('${assetPath(img)}')` }}
-          >
-            <div className={styles.overlay}></div>
-          </div>
+          <SwiperSlide key={index}>
+            <div
+              className={styles.slide}
+              style={{ backgroundImage: `url('${assetPath(img)}')` }}
+            >
+              <div className={styles.overlay}></div>
+            </div>
+          </SwiperSlide>
         ))}
-        <div className={styles.content}>
-          <span className="section-subtitle">Exquisite Flavors</span>
-          <h2 className="section-title" style={{ color: 'white' }}>Crafted with Passion</h2>
-          <p>Every dish tells a story of tradition and quality ingredients.</p>
-        </div>
-        <div className={styles.dots}>
-          {images.map((_, index) => (
-            <button
-              key={index}
-              className={`${styles.dot} ${index === current ? styles.dotActive : ''}`}
-              onClick={() => setCurrent(index)}
-            />
-          ))}
-        </div>
+      </Swiper>
+      
+      <div className={styles.content}>
+        <span className="section-subtitle">Exquisite Flavors</span>
+        <h2 className="section-title" style={{ color: 'white' }}>Crafted with Passion</h2>
+        <p>Every dish tells a story of tradition and quality ingredients.</p>
       </div>
     </section>
   );
