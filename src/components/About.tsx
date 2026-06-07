@@ -3,7 +3,7 @@ import styles from './About.module.css';
 
 const About = () => {
   return (
-    <section className="section" id="about">
+    <section className="section bg-light" id="about">
       <div className="container">
         <div className={styles.grid}>
           <div className={styles.imageWrapper}>
@@ -20,12 +20,15 @@ const About = () => {
           </div>
           <div className={styles.content}>
             <span className="section-subtitle">Italian Tradition</span>
-            <h2 className="section-title">Our Culinary Story</h2>
+            <h2 className="section-title">A Hidden Gem in Dehradun</h2>
             <p>
-              Alessio&apos;s Cafe & Pizzeria is a labor of love, bringing the authentic flavors of Italy to the heart of Dehradun. We believe that great food starts with simple, high-quality ingredients and a passion for tradition.
+              Alessio&apos;s Cafe & Pizzeria is a peaceful retreat nestled away from the urban bustle. We represent the vanguard of Dehradun&apos;s evolving culinary identity, bridging the gap between international trends and local sensibilities.
             </p>
             <p>
-              From our artisan pizzas baked to perfection to our delicious pasta and refreshing beverages, every item on our menu is a celebration of flavors. Join us for a taste of fine dining right here in your neighborhood.
+              Our story is one of passion—the transition from mass-produced corporate pizza to artisanal, thin-crust perfection. At Alessio&apos;s, every dish tells a story. We prioritize atmospheric serenity and traditional Italian methodologies, utilizing in-house handmade bread and the finest ingredients.
+            </p>
+            <p>
+              Located near the Maharana Pratap Sports College, we serve as a social hub for athletes, students, and families seeking a &quot;magical&quot; dining experience under the evening fairy lights.
             </p>
             <div className={styles.signature}>
               <p className={styles.signatureText}>Anshul Parmar</p>

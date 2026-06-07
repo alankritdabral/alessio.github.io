@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>360 Tour Editor</title>
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --primary: #0369A1;
+            --primary-hover: #075985;
+            --bg-sidebar: #0f172a;
+        }
+        body { 
+            margin: 0; padding: 0; 
+            font-family: 'Inter', sans-serif; 
+            background: #020617; 
+            color: #f8fafc;
+            display: flex; height: 100vh; overflow: hidden;
+        }
+        h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+        
+        .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+        .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        
+        /* Hotspot Styling for Preview */
+        .walking-hotspot {
+            height: 40px; width: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        .walking-hotspot:hover { background: rgba(255, 255, 255, 0.4); transform: scale(1.1); }
+        .walking-hotspot::after {
+            content: ''; width: 8px; height: 8px;
+            border-top: 2px solid #fff; border-right: 2px solid #fff;
+            transform: rotate(-45deg); margin-top: 2px;
+        }
+        
+        .info-hotspot {
+            height: 32px; width: 32px;
+            background: var(--primary);
+            border: 2px solid #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(3, 105, 161, 0.5);
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        .info-hotspot:hover { transform: scale(1.1); background: #0ea5e9; }
+
+        .pulse-ring {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+        }
+        
+        /* Glassmorphism for Preview */
+        .glass {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Input Overrides */
+        input, select, textarea {
+            background: #1e293b !important;
+            border: 1px solid #334155 !important;
+            color: #f8fafc !important;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary) !important;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(3, 105, 161, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-slate-950">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-80 bg-slate-900 border-r border-slate-800 flex flex-col h-full z-30">
+        <div class="p-6 border-b border-slate-800 flex items-center gap-3">
+            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <i data-lucide="layers" class="w-5 h-5 text-white"></i>
+            </div>
+            <h1 class="text-xl font-bold tracking-tight">Tour Editor</h1>
+        </div>
+        
+        <div class="flex-grow overflow-y-auto sidebar-scroll p-6 space-y-8">
+            <!-- Scene Selection -->
+            <section class="space-y-4">
+                <div class="flex items-center gap-2 text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                    <i data-lucide="image" class="w-3.5 h-3.5"></i>
+                    <span>Scene Management</span>
+                </div>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5">Current Scene</label>
+                        <select id="scene-select" class="w-full rounded-lg px-3 py-2 text-sm"></select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5">Scene Title</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="scene-title" placeholder="e.g. Living Room" class="flex-grow rounded-lg px-3 py-2 text-sm">
+                            <button id="add-scene" class="bg-slate-800 hover:bg-slate-700 p-2 rounded-lg transition-colors">
+                                <i data-lucide="check" class="w-4 h-4 text-emerald-500"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Add Hotspot -->
+            <section class="space-y-4">
+                <div class="flex items-center gap-2 text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                    <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                    <span>Add New Hotspot</span>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5">Hotspot Type</label>
+                        <select id="hs-type" class="w-full rounded-lg px-3 py-2 text-sm">
+                            <option value="scene">Navigation (To Scene)</option>
+                            <option value="info">Information (Popup)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1.5">Pitch</label>
+                            <input type="text" id="hs-pitch" readonly class="w-full rounded-lg px-3 py-2 text-sm font-mono text-emerald-400 bg-slate-900/50">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1.5">Yaw</label>
+                            <input type="text" id="hs-yaw" readonly class="w-full rounded-lg px-3 py-2 text-sm font-mono text-emerald-400 bg-slate-900/50">
+                        </div>
+                    </div>
+                    
+                    <div id="target-scene-group">
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5">Target Scene</label>
+                        <select id="target-scene" class="w-full rounded-lg px-3 py-2 text-sm"></select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1.5">Label / Title</label>
+                        <input type="text" id="hs-text" placeholder="e.g. Next Room" class="w-full rounded-lg px-3 py-2 text-sm">
+                    </div>
+                    
+                    <div id="info-desc-group" class="hidden space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1.5">Description</label>
+                            <textarea id="hs-desc" rows="3" placeholder="Enter details..." class="w-full rounded-lg px-3 py-2 text-sm resize-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1.5">Import HTML</label>
+                            <input type="file" id="hs-html-file" accept=".html" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-slate-200 hover:file:bg-slate-600">
+                        </div>
+                    </div>
+                    
+                    <button id="save-hotspot" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        <span>Save Hotspot</span>
+                    </button>
+                    <p class="text-[10px] text-slate-500 text-center italic">Click on the image to set coordinates</p>
+                </div>
+            </section>
+
+            <!-- Active Hotspots -->
+            <section class="space-y-4">
+                <div class="flex items-center gap-2 text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                    <i data-lucide="list" class="w-3.5 h-3.5"></i>
+                    <span>Scene Hotspots</span>
+                </div>
+                <ul id="hotspot-list" class="space-y-2">
+                    <!-- Items added by JS -->
+                </ul>
+            </section>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="p-6 border-t border-slate-800 bg-slate-900/50 flex flex-col gap-2">
+            <button id="export-json" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors">
+                <i data-lucide="download" class="w-4 h-4"></i>
+                <span>Export JSON</span>
+            </button>
+            <button id="import-btn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors">
+                <i data-lucide="upload" class="w-4 h-4"></i>
+                <span>Import JSON</span>
+            </button>
+            <input type="file" id="import-file" class="hidden" accept=".json">
+        </div>
+    </aside>
+
+    <!-- Main View -->
+    <main class="flex-grow relative flex flex-col h-full overflow-hidden">
+        <!-- HUD Overlay -->
+        <div class="absolute top-6 right-6 z-20 flex items-center gap-4 pointer-events-none">
+            <div class="glass px-4 py-2 rounded-lg flex items-center gap-3 text-xs font-mono">
+                <div class="flex items-center gap-1.5">
+                    <span class="text-slate-500">P:</span>
+                    <span id="cur-pitch" class="text-emerald-400 w-10">0.0</span>
+                </div>
+                <div class="w-px h-3 bg-slate-700"></div>
+                <div class="flex items-center gap-1.5">
+                    <span class="text-slate-500">Y:</span>
+                    <span id="cur-yaw" class="text-emerald-400 w-10">0.0</span>
+                </div>
+            </div>
+            <button id="fullscreen-btn" onclick="toggleFullscreen()" class="glass pointer-events-auto p-2.5 rounded-lg hover:bg-white/10 transition-colors">
+                <i data-lucide="maximize" class="w-5 h-5"></i>
+            </button>
+        </div>
+        
+        <div id="tour-wrapper" class="w-full h-full">
+            <!-- Preview Modal -->
+            <div id="modal-backdrop" onclick="closeModal()" class="absolute inset-0 bg-black/60 backdrop-blur-md z-[100] hidden opacity-0 transition-opacity duration-300"></div>
+            <div id="info-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-5xl z-[101] hidden flex-col opacity-0 transition-all duration-300 scale-95">
+                <!-- Floating Close Button -->
+                <button onclick="closeModal()" class="absolute -top-12 right-0 p-2 rounded-full glass hover:bg-white/20 transition-all text-white z-[102]">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+                <div id="modal-content" class="w-full h-full overflow-y-auto rounded-2xl">
+                    <!-- Content injected here -->
+                </div>
+            </div>
+
+            <div id="panorama" class="w-full h-full"></div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+    <script>
+        lucide.createIcons();
+        const imageFiles = ["1.jpg", "2.jpg", "3.jpg", "4.jpg"];
+
+        let tourConfig = {
+            default: { firstScene: "", author: "Alankrit Dabral", sceneFadeDuration: 1000, autoLoad: true },
+            scenes: {}
+        };
+
+        let currentSceneId = "";
+        let viewer = null;
+
+        const sceneSelect = document.getElementById('scene-select');
+        const targetSceneSelect = document.getElementById('target-scene');
+        const sceneTitleInput = document.getElementById('scene-title');
+        const hsPitchInput = document.getElementById('hs-pitch');
+        const hsYawInput = document.getElementById('hs-yaw');
+        const hsTextInput = document.getElementById('hs-text');
+        const hsTypeSelect = document.getElementById('hs-type');
+        const hsDescInput = document.getElementById('hs-desc');
+        const targetGroup = document.getElementById('target-scene-group');
+        const infoGroup = document.getElementById('info-desc-group');
+        const hsHtmlFile = document.getElementById('hs-html-file');
+        const hotspotList = document.getElementById('hotspot-list');
+
+        function toggleFullscreen() {
+            const wrapper = document.getElementById('tour-wrapper');
+            if (!document.fullscreenElement) {
+                wrapper.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function init() {
+            imageFiles.forEach(file => {
+                const opt1 = document.createElement('option');
+                opt1.value = file; opt1.textContent = file;
+                sceneSelect.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = file; opt2.textContent = file;
+                targetSceneSelect.appendChild(opt2);
+                
+                tourConfig.scenes[file] = {
+                    title: file,
+                    panorama: "images/" + file,
+                    hotSpots: []
+                };
+            });
+
+            currentSceneId = imageFiles[0];
+            tourConfig.default.firstScene = currentSceneId;
+            loadViewer(currentSceneId);
+            updateHotspotList();
+        }
+
+        function loadViewer(sceneId) {
+            if (viewer) viewer.destroy();
+            
+            const configCopy = JSON.parse(JSON.stringify(tourConfig));
+            for (let sId in configCopy.scenes) {
+                configCopy.scenes[sId].hotSpots.forEach(hs => {
+                    if (hs.type === 'info') {
+                        hs.clickHandlerFunc = showInfoPopup;
+                        hs.clickHandlerArgs = { title: hs.title, content: hs.infoContent };
+                        hs.cssClass = "info-hotspot";
+                    } else {
+                        hs.cssClass = "walking-hotspot";
+                    }
+                });
+            }
+
+            viewer = pannellum.viewer('panorama', {
+                ...configCopy,
+                "firstScene": sceneId,
+                "autoLoad": true,
+                "showControls": true
+            });
+
+            viewer.on('load', () => {
+                // Add pulse effect and icons to hotspots in editor preview
+                const hotspots = document.querySelectorAll('.walking-hotspot, .info-hotspot');
+                hotspots.forEach(hs => {
+                    if (!hs.querySelector('.pulse-ring')) {
+                        const ring = document.createElement('div');
+                        ring.className = 'pulse-ring';
+                        hs.appendChild(ring);
+                    }
+                    if (hs.classList.contains('info-hotspot') && !hs.querySelector('svg')) {
+                        hs.innerHTML += '<i data-lucide="info" class="w-4 h-4 text-white"></i>';
+                    }
+                });
+                lucide.createIcons();
+            });
+
+            viewer.on('mousedown', (event) => {
+                const coords = viewer.mouseEventToCoords(event);
+                if (coords) {
+                    hsPitchInput.value = coords[0].toFixed(2);
+                    hsYawInput.value = coords[1].toFixed(2);
+                }
+            });
+
+            viewer.on('scenechange', (newSceneId) => {
+                currentSceneId = newSceneId;
+                sceneSelect.value = newSceneId;
+                sceneTitleInput.value = tourConfig.scenes[newSceneId].title;
+                updateHotspotList();
+            });
+
+            if (window.infoInterval) clearInterval(window.infoInterval);
+            window.infoInterval = setInterval(() => {
+                if (viewer && viewer.getPitch) {
+                    document.getElementById('cur-pitch').innerText = viewer.getPitch().toFixed(1);
+                    document.getElementById('cur-yaw').innerText = viewer.getYaw().toFixed(1);
+                }
+            }, 100);
+        }
+
+        function showInfoPopup(e, args) {
+            const modal = document.getElementById('info-modal');
+            const backdrop = document.getElementById('modal-backdrop');
+            const content = document.getElementById('modal-content');
+
+            if (args.title === "Menu") {
+                const escapedContent = args.content.replace(/"/g, '&quot;');
+                content.innerHTML = `<iframe srcdoc="${escapedContent}" style="width:100%; height:600px; border:none; background:transparent;"></iframe>`;
+                modal.classList.add('max-w-5xl');
+                modal.classList.remove('max-w-2xl');
+            } else {
+                content.innerHTML = `<div class="glass p-8 rounded-2xl text-slate-200 leading-relaxed">${args.content || "No description provided."}</div>`;
+                modal.classList.add('max-w-2xl');
+                modal.classList.remove('max-w-5xl');
+            }
+            
+            modal.classList.remove('hidden');
+            backdrop.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('opacity-100', 'scale-100');
+                modal.classList.remove('opacity-0', 'scale-95');
+                backdrop.classList.add('opacity-100');
+                backdrop.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        window.closeModal = function() {
+            const modal = document.getElementById('info-modal');
+            const backdrop = document.getElementById('modal-backdrop');
+            modal.classList.remove('opacity-100', 'scale-100');
+            modal.classList.add('opacity-0', 'scale-95');
+            backdrop.classList.remove('opacity-100');
+            backdrop.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                backdrop.classList.add('hidden');
+            }, 300);
+        }
+
+        hsTypeSelect.addEventListener('change', (e) => {
+            if (e.target.value === 'info') {
+                targetGroup.classList.add('hidden');
+                infoGroup.classList.remove('hidden');
+            } else {
+                targetGroup.classList.remove('hidden');
+                infoGroup.classList.add('hidden');
+            }
+        });
+
+        hsHtmlFile.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => { hsDescInput.value = e.target.result; };
+            reader.readAsText(file);
+        });
+
+        function updateHotspotList() {
+            hotspotList.innerHTML = "";
+            if (!tourConfig.scenes[currentSceneId]) return;
+            const hotspots = tourConfig.scenes[currentSceneId].hotSpots;
+            hotspots.forEach((hs, index) => {
+                const li = document.createElement('li');
+                li.className = 'bg-slate-800/80 border border-slate-700/50 rounded-lg p-3 flex items-center justify-between group';
+                li.innerHTML = `
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-bold uppercase text-slate-500 tracking-wider">${hs.type}</span>
+                        <span class="text-sm font-medium text-slate-200 truncate max-w-[140px]">${hs.text}</span>
+                    </div>
+                    <button onclick="removeHotspot(${index})" class="text-slate-500 hover:text-red-400 p-1.5 rounded-md hover:bg-red-400/10 transition-all opacity-0 group-hover:opacity-100">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                `;
+                hotspotList.appendChild(li);
+            });
+            lucide.createIcons();
+        }
+
+        window.removeHotspot = function(index) {
+            tourConfig.scenes[currentSceneId].hotSpots.splice(index, 1);
+            updateHotspotList();
+            loadViewer(currentSceneId);
+        }
+
+        sceneSelect.addEventListener('change', (e) => {
+            currentSceneId = e.target.value;
+            sceneTitleInput.value = tourConfig.scenes[currentSceneId].title;
+            loadViewer(currentSceneId);
+            updateHotspotList();
+        });
+
+        document.getElementById('add-scene').addEventListener('click', () => {
+            tourConfig.scenes[currentSceneId].title = sceneTitleInput.value;
+            alert("Title updated!");
+        });
+
+        document.getElementById('save-hotspot').addEventListener('click', () => {
+            if (!hsPitchInput.value) return alert("Click the image first!");
+            
+            const type = hsTypeSelect.value;
+            const newHS = {
+                pitch: parseFloat(hsPitchInput.value),
+                yaw: parseFloat(hsYawInput.value),
+                type: type,
+                text: hsTextInput.value || (type === 'scene' ? "Next Scene" : "Information")
+            };
+
+            if (type === 'scene') {
+                newHS.sceneId = targetSceneSelect.value;
+                newHS.cssClass = "walking-hotspot";
+            } else {
+                newHS.title = hsTextInput.value || "Information";
+                newHS.infoContent = hsDescInput.value;
+                newHS.text = newHS.title; 
+                newHS.cssClass = "info-hotspot";
+            }
+
+            tourConfig.scenes[currentSceneId].hotSpots.push(newHS);
+            updateHotspotList();
+            loadViewer(currentSceneId);
+            
+            hsTextInput.value = "";
+            hsDescInput.value = "";
+            hsPitchInput.value = "";
+            hsYawInput.value = "";
+        });
+
+        document.getElementById('export-json').addEventListener('click', () => {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tourConfig, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "tour_config.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        });
+
+        document.getElementById('import-btn').addEventListener('click', () => {
+            document.getElementById('import-file').click();
+        });
+
+        document.getElementById('import-file').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const importedConfig = JSON.parse(e.target.result);
+                    tourConfig = importedConfig;
+                    currentSceneId = tourConfig.default.firstScene || Object.keys(tourConfig.scenes)[0];
+                    sceneSelect.value = currentSceneId;
+                    sceneTitleInput.value = tourConfig.scenes[currentSceneId].title;
+                    loadViewer(currentSceneId);
+                    updateHotspotList();
+                } catch (err) { alert("Error parsing JSON: " + err.message); }
+            };
+            reader.readAsText(file);
+        });
+
+        init();
+    </script>
+</body>
+</html>

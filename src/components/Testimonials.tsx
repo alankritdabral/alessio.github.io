@@ -99,7 +99,7 @@ const reviews: Review[] = [
 
 const Testimonials = () => {
   return (
-    <section className="section bg-light" id="testimonials">
+    <section className="section" id="testimonials">
       <div className="container">
         <div className="text-center mb-4">
           <span className="section-subtitle">Testimonials</span>

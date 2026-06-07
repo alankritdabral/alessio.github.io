@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loulou - Menu Book</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #c5a059;
+            --primary-hover: #b38f4d;
+            --secondary: #1a1a1a;
+            --accent: #222222;
+            --background: #ffffff;
+            --foreground: #111111;
+            --muted: #666666;
+            --border: #e5e5e5;
+            --header-font: 'Playfair Display', serif;
+            --body-font: 'Inter', sans-serif;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--body-font);
+            background-color: transparent !important;
+            color: #fff; /* Lighten text for transparency */
+            line-height: 1.4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .book-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .book {
+            width: 98%;
+            max-width: 900px;
+            height: 95%;
+            max-height: 600px;
+            position: relative;
+            display: flex;
+            background: rgba(0, 0, 0, 0.5); /* 50% Transparent Navy */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: var(--shadow);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .book::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 1px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 10;
+        }
+
+        .page {
+            width: 50%;
+            height: 100%;
+            padding: 30px 45px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: transparent;
+        }
+
+        .page-left {
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .page-content {
+            flex-grow: 1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-content.active {
+            opacity: 1;
+        }
+
+        .section-title {
+            font-family: var(--header-font);
+            font-size: 1.5rem;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .price-legend {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-align: right;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 5px;
+            min-height: 1.2rem;
+        }
+
+        .menu-item {
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2px;
+            gap: 10px;
+        }
+
+        .item-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #f8fafc;
+            flex: 1;
+            font-family: var(--header-font);
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: var(--primary);
+            font-family: var(--body-font);
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        .item-desc {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+            line-height: 1.3;
+        }
+
+        .featured-tag {
+            color: var(--primary);
+            font-size: 0.55rem;
+            margin-left: 6px;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-family: var(--body-font);
+            font-weight: 600;
+            font-size: 0.7rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            position: absolute;
+            bottom: 20px;
+            z-index: 30;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            backdrop-filter: blur(4px);
+        }
+
+        #prev-btn { left: 20px; }
+        #next-btn { right: 20px; }
+
+        .nav-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .nav-btn:disabled {
+            display: none;
+        }
+
+        /* Mobile Paging for Menu - One page at a time */
+        @media (max-width: 768px) {
+            body {
+                overflow: hidden !important;
+                height: 100vh !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: block !important;
+                background: #020617 !important;
+            }
+            .book-container {
+                height: 100% !important;
+                width: 100% !important;
+                padding: 0 !important;
+                display: block !important;
+            }
+            .book {
+                display: flex !important;
+                flex-direction: row !important;
+                height: 100% !important;
+                width: 100% !important;
+                overflow-x: auto !important;
+                scroll-snap-type: x mandatory !important;
+                -webkit-overflow-scrolling: touch !important;
+                border-radius: 0 !important;
+                background: rgba(0, 0, 0, 0.5) !important;
+                max-height: none !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            .book::before { display: none !important; }
+
+            .page {
+                flex: 0 0 100% !important;
+                width: 100% !important;
+                height: 100% !important;
+                scroll-snap-align: start !important;
+                overflow-y: auto !important;
+                padding: 60px 25px 40px 25px !important;
+                border: none !important;
+                background: transparent !important;
+                box-sizing: border-box !important;
+            }
+            .section-title {
+                font-size: 1.3rem !important;
+                text-align: center !important;
+                margin-bottom: 20px !important;
+                margin-top: 10px !important;
+            }
+            /* Visual Swipe Indicator */
+            .book-container::after {
+                content: '← Swipe to flip →';
+                position: fixed;
+                top: 20px;
+                left: 0;
+                right: 0;
+                text-align: center;
+                font-size: 0.7rem;
+                color: rgba(197, 160, 89, 0.6);
+                font-family: var(--body-font);
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                pointer-events: none;
+                z-index: 100;
+            }
+            .nav-btn { display: none !important; }
+        }
+        </style>
+
+</head>
+<body>
+
+<div class="book-container">
+    <div class="book" id="book">
+        <!-- Left Page -->
+        <div class="page page-left">
+            <button class="nav-btn" id="prev-btn" onclick="prevPage()">&larr; Previous</button>
+            <div id="left-content" class="page-content active">
+                <!-- Content will be injected here -->
+            </div>
+        </div>
+        
+        <!-- Right Page -->
+        <div class="page page-right">
+            <button class="nav-btn" id="next-btn" onclick="nextPage()">Next &rarr;</button>
+            <div id="right-content" class="page-content active">
+                <!-- Content will be injected here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const menuData = [
+    {
+        "title": "Pizza (1)",
+        "legend": "Medium / Large",
+        "type": "menu",
+        "items": [
+            {
+                "name": "Margherita",
+                "price": "\u20b9200 / \u20b9250",
+                "desc": "Classic Italian pizza with tomato sauce, mozzarella, and fresh basil.",
+                "featured": false,
+                "has_variants": true,
+                "variant_type": "Medium"
+            },
+            {
+                "name": "Corn O Mania",
+                "price": "\u20b9220 / \u20b9270",
+                "desc": "Sweet corn kernels paired with a rich layer of melted mozzarella cheese.",
+                "featured": false,
+                "has_variants": true,
+                "variant_type": "Medium"
+            },
+            {
+                "name": "Full Call Veg",
+                "price": "\u20b9260 / \u20b9320",
+                "desc": "A vibrant medley of bell peppers, onions, tomatoes, and mushrooms.",
+                "featured": false,
+                "has_variants": true,
+                "variant_type": "Medium"
+            },
+            {
+                "name": "Veg Calzone",
+                "price": "\u20b9280 / \u20b9360",
+                "desc": "Golden-brown folded pizza crust stuffed with savory seasonal vegetables.",
+                "featured": false,
+                "has_variants": true,
+                "variant_type": "Medium"
+            },
+            {
+                "name": "Hot Mexicana",
+                "price": "\u20b9240 / \u20b9300",
+                "desc": "Spicy peppers, onions, and jalape\u00f1os for a zesty Mexican-inspired flavor.",
+                "featured": true,
+                "has_variants": true,
+                "variant_type": "Medium"
+            },
+            {
+                "name": "Paneer Delight",
+                "price": "\u20b9260 / \u20b9320",
+                "desc": "Creamy marinated paneer chunks topped with crisp onions and capsicum.",
+                "featured": true,
+                "has_variants": true,
+                "variant_type": "Medium"
+            },
+            {
+                "name": "Puttanesca",
+                "price": "\u20b9270 / \u20b9330",
+                "desc": "Gourmet pizza with rich pesto sauce, olives, and premium mozzarella.",
+                "featured": false,
+                "has_variants": true,
+                "variant_type": "Medium"
+            }
+        ]
+    },
+    {
+        "title": "Pizza (2)",
+        "legend": "Medium / Large",
+        "type": "menu",
+        "items": [
+            {
+                "name": "Tandoori Paneer",
+                "price": "\u20b9270 / \u20b9330",
+                "desc": "Spiced tandoori paneer with red onions and a hint of smoky flavor.",
+                "featured": true,
+                "has_variants": true,
+                "variant_type": "Medium"
+            },
+            {
+                "name": "Chicken Fungi",
+                "price": "\u20b9250 / \u20b9300",
+                "desc": "Tender chicken and earthy mushrooms on a classic tomato base.",
+                "featured": true,
+                "has_variants": true,
+                "variant_type": "Medium"
+            },
+            {
+                "name": "BBQ Chicken",
+                "price": "\u20b9250 / \u20b9300",
+                "desc": "Smoky BBQ sauce drizzled over juicy chicken and crunchy onions.",
+                "featured": true,
+                "has_variants": true,
+                "variant_type": "Medium"
+            },
+            {
+                "name": "Chicken Calzone",
+                "price": "\u20b9300 / \u20b9400",
+                "desc": "A folded pizza delight filled with spicy chicken and melted cheese.",
+                "featured": true,
+                "has_variants": true,
+                "variant_type": "Medium"
+            },
+            {
+                "name": "Hot Shot Chicken",
+                "price": "\u20b9270 / \u20b9330",
+                "desc": "Extra spicy chicken chunks with jalape\u00f1os for a fiery kick.",
+                "featured": true,
+                "has_variants": true,
+                "variant_type": "Medium"
+            },
+            {
+                "name": "Tandoori Chicken",
+                "price": "\u20b9260 / \u20b9320",
+                "desc": "Tandoori marinated chicken with Indian spices and red onions.",
+                "featured": true,
+                "has_variants": true,
+                "variant_type": "Medium"
+            },
+            {
+                "name": "Chicken Mexicana",
+                "price": "\u20b9250 / \u20b9300",
+                "desc": "Spiced chicken with corn and peppers on a Mexican-style base.",
+                "featured": true,
+                "has_variants": true,
+                "variant_type": "Medium"
+            }
+        ]
+    },
+    {
+        "title": "Pizza (Regular Pan)",
+        "legend": "",
+        "type": "menu",
+        "items": [
+            {
+                "name": "Corn & Cheese",
+                "price": "\u20b9170",
+                "desc": "",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Onion Capsicum",
+                "price": "\u20b9190",
+                "desc": "",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Garlic Onion Chilli",
+                "price": "\u20b9190",
+                "desc": "",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Onion & Tomato",
+                "price": "\u20b9180",
+                "desc": "",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Paneer & Onion",
+                "price": "\u20b9210",
+                "desc": "",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Chicken & Onion",
+                "price": "\u20b9230",
+                "desc": "",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            }
+        ]
+    },
+    {
+        "title": "Pasta & Salads",
+        "legend": "",
+        "type": "menu",
+        "items": [
+            {
+                "name": "Aglio e Olio",
+                "price": "\u20b9300",
+                "desc": "Classic pasta with garlic, olive oil, and chili flakes.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "White Sauce Pasta",
+                "price": "\u20b9250",
+                "desc": "Rich and creamy bechamel sauce pasta.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Red Sauce Pasta",
+                "price": "\u20b9200",
+                "desc": "Tangy tomato-based Italian pasta.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Mix Sauce Pasta",
+                "price": "\u20b9300",
+                "desc": "The best of both worlds: red and white sauce combined.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Spaghetti Al Polo",
+                "price": "\u20b9330",
+                "desc": "Spaghetti served with savory chicken pieces.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Spaghetti Pesto",
+                "price": "\u20b9350",
+                "desc": "Fresh basil pesto spaghetti with nuts and parmesan.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Caesar Salad",
+                "price": "\u20b9250",
+                "desc": "Fresh romaine lettuce, croutons, and Caesar dressing.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            }
+        ]
+    },
+    {
+        "title": "Burgers & Wraps (1)",
+        "legend": "",
+        "type": "menu",
+        "items": [
+            {
+                "name": "Veg Pattie & Cheese Burger",
+                "price": "\u20b9120",
+                "desc": "Crispy veg patty with cheese and fresh veggies. Free fries included.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Peri Peri Paneer Cheese Burger",
+                "price": "\u20b9150",
+                "desc": "Spicy peri-peri paneer with cheese and veggies. Free fries included.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Crispy Paneer Cheese Burger",
+                "price": "\u20b9170",
+                "desc": "Breaded crispy paneer with cheese. Free fries included.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Chicken BBQ Burger",
+                "price": "\u20b9180",
+                "desc": "Grilled chicken with smoky BBQ sauce and cheese. Free fries included.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Crispy Chicken Burger",
+                "price": "\u20b9200",
+                "desc": "Golden fried chicken breast with special mayo. Free fries included.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Peri Peri Chicken Burger",
+                "price": "\u20b9180",
+                "desc": "Spicy peri-peri chicken with cheese. Free fries included.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Chicken Pattie Burger",
+                "price": "\u20b9150",
+                "desc": "Juicy chicken patty with cheese and lettuce. Free fries included.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Egg and Cheese Burger",
+                "price": "\u20b9140",
+                "desc": "Fluffy egg and melted cheese. Free fries included.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            }
+        ]
+    },
+    {
+        "title": "Burgers & Wraps (2)",
+        "legend": "",
+        "type": "menu",
+        "items": [
+            {
+                "name": "Chicken and Cheese Wrap",
+                "price": "\u20b9180",
+                "desc": "Savory chicken and cheese rolled in a soft wrap.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Spicy Paneer Wrap",
+                "price": "\u20b9170",
+                "desc": "Marinated spicy paneer with fresh veggies.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Crispy Chicken Wrap",
+                "price": "\u20b9200",
+                "desc": "Golden crispy chicken strips with zesty mayo.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Vegetable Wrap",
+                "price": "\u20b9160",
+                "desc": "A healthy mix of seasonal veggies and light sauces.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Egg Wrap",
+                "price": "\u20b9150",
+                "desc": "Scrambled eggs and veggies in a toasted wrap.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Chicken Keema Wrap",
+                "price": "\u20b9200",
+                "desc": "Spiced minced chicken for a rich and hearty meal.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            }
+        ]
+    },
+    {
+        "title": "Sandwiches",
+        "legend": "",
+        "type": "menu",
+        "items": [
+            {
+                "name": "Freestyle Sandwich",
+                "price": "\u20b9140",
+                "desc": "Customize your sandwich with a variety of fresh fillings. Free fries included.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Grill Paneer Sandwich",
+                "price": "\u20b9180",
+                "desc": "Perfectly grilled paneer with spices. Free fries included.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Corn & Cheese Sandwich",
+                "price": "\u20b9140",
+                "desc": "Sweet corn and gooey cheese between toasted bread. Free fries included.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Chicken & Cheese Sandwich",
+                "price": "\u20b9200",
+                "desc": "Savory chicken and melted cheese. Free fries included.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Egg & Cheese Sandwich",
+                "price": "\u20b9150",
+                "desc": "Wholesome egg and cheese sandwich. Free fries included.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            }
+        ]
+    },
+    {
+        "title": "Breads",
+        "legend": "",
+        "type": "menu",
+        "items": [
+            {
+                "name": "Garlic Bread",
+                "price": "\u20b9120",
+                "desc": "Classic toasted bread with garlic butter.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Cheese Garlic Bread",
+                "price": "\u20b9170",
+                "desc": "Garlic bread topped with melted mozzarella.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Stuffed Garlic Bread",
+                "price": "\u20b9220",
+                "desc": "Bread stuffed with corn and jalape\u00f1os.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Stuffed Chicken Bread",
+                "price": "\u20b9250",
+                "desc": "Bread stuffed with savory spicy chicken.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            }
+        ]
+    },
+    {
+        "title": "Sides & Snacks (1)",
+        "legend": "",
+        "type": "menu",
+        "items": [
+            {
+                "name": "Fries",
+                "price": "\u20b9110",
+                "desc": "Crispy golden potato fries.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Homemade Fries",
+                "price": "\u20b9150",
+                "desc": "Thick hand-cut artisanal potato fries.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Masala Fries",
+                "price": "\u20b9150",
+                "desc": "Spiced up with our secret masala dust.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Honey Chilli Potato",
+                "price": "\u20b9220",
+                "desc": "Crispy potato wedges in a sweet and spicy glaze.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Homemade Chilli Fries",
+                "price": "\u20b9250",
+                "desc": "Spicy hand-cut fries with a fiery kick.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Fried Chicken",
+                "price": "\u20b9200",
+                "desc": "Juicy chicken with a crispy golden coating.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Maggie Cheese",
+                "price": "\u20b9100",
+                "desc": "Classic maggie noodles with extra cheese.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Chilli Chicken",
+                "price": "\u20b9300",
+                "desc": "Spicy Indo-Chinese style chicken.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            }
+        ]
+    },
+    {
+        "title": "Sides & Snacks (2)",
+        "legend": "",
+        "type": "menu",
+        "items": [
+            {
+                "name": "Chilli Paneer",
+                "price": "\u20b9280",
+                "desc": "Spicy Indo-Chinese style paneer.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Chilli Mushroom",
+                "price": "\u20b9280",
+                "desc": "Spicy Indo-Chinese style mushrooms.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Veg Cheese Nuggets",
+                "price": "\u20b9180",
+                "desc": "Crispy nuggets filled with vegetables and cheese.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Macaroni",
+                "price": "\u20b9180",
+                "desc": "Creamy and cheesy macaroni pasta.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Fish & Chips",
+                "price": "\u20b9250",
+                "desc": "Classic battered fish and crispy fries.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Momos Veg (Steamed/Fried)",
+                "price": "\u20b9100",
+                "desc": "Fresh vegetable dumplings, steamed or fried.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Momos Chicken (Steamed/Fried)",
+                "price": "\u20b9150",
+                "desc": "Savory chicken dumplings, steamed or fried.",
+                "featured": true,
+                "has_variants": false,
+                "variant_type": null
+            }
+        ]
+    },
+    {
+        "title": "Beverages (1)",
+        "legend": "",
+        "type": "menu",
+        "items": [
+            {
+                "name": "Plain Cold Coffee",
+                "price": "\u20b9120",
+                "desc": "Classic smooth blended chilled coffee.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Hazelnut Cold Coffee",
+                "price": "\u20b9140",
+                "desc": "Blended coffee with rich hazelnut flavor.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Chocolate Cold Coffee",
+                "price": "\u20b9140",
+                "desc": "Chilled coffee with a chocolatey twist.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Tiramisu Cold Coffee",
+                "price": "\u20b9160",
+                "desc": "Italian dessert inspired cold coffee.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Irish Cold Coffee",
+                "price": "\u20b9160",
+                "desc": "Blended coffee with a hint of Irish flavor.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Vanilla Cold Coffee",
+                "price": "\u20b9140",
+                "desc": "Smooth coffee with a touch of vanilla.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Mixberry Shake",
+                "price": "\u20b9200",
+                "desc": "A berry blast with fresh milk.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Blueberry Shake",
+                "price": "\u20b9170",
+                "desc": "Sweet and tangy blueberry milk shake.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            }
+        ]
+    },
+    {
+        "title": "Beverages (2)",
+        "legend": "",
+        "type": "menu",
+        "items": [
+            {
+                "name": "Butterscotch Shake",
+                "price": "\u20b9160",
+                "desc": "Creamy shake with butterscotch crunch.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Choco Hazelnut Shake",
+                "price": "\u20b9160",
+                "desc": "Rich chocolate and hazelnut blend.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Strawberry Shake",
+                "price": "\u20b9150",
+                "desc": "Classic refreshing strawberry shake.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Mango Shake",
+                "price": "\u20b9150",
+                "desc": "Seasonal favorite mango milk shake.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "KitKat Shake",
+                "price": "\u20b9180",
+                "desc": "Crunchy KitKat blended in a shake.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Oreo Shake",
+                "price": "\u20b9160",
+                "desc": "Delicious cookies and cream shake.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Vanilla Shake",
+                "price": "\u20b9150",
+                "desc": "Classic sweet vanilla milk shake.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Passion Fruit Shake",
+                "price": "\u20b9160",
+                "desc": "Exotic passion fruit milk shake.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            }
+        ]
+    },
+    {
+        "title": "Beverages (3)",
+        "legend": "",
+        "type": "menu",
+        "items": [
+            {
+                "name": "Green Apple",
+                "price": "\u20b9140",
+                "desc": "Tangy and crisp green apple cooler.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Mojito (Mint/Strawberry/Mango)",
+                "price": "\u20b9120",
+                "desc": "Refreshing mocktail with lime and mint.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Blue Lagoon",
+                "price": "\u20b9150",
+                "desc": "Chilling blue citrus mocktail.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Watermelon Hit",
+                "price": "\u20b9150",
+                "desc": "Fresh and fruity watermelon cooler.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Bubblegum Blast",
+                "price": "\u20b9150",
+                "desc": "Sweet and fun bubblegum flavored drink.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Fruit Beer Malt",
+                "price": "\u20b9160",
+                "desc": "Non-alcoholic malted fruit beer.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Iced Tea (Peach/Lemon)",
+                "price": "\u20b9140",
+                "desc": "Refreshing chilled tea with fruit notes.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Lemon Cooler",
+                "price": "\u20b980",
+                "desc": "Sweet or salty refreshing lemon cooler.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            }
+        ]
+    },
+    {
+        "title": "Beverages (4)",
+        "legend": "",
+        "type": "menu",
+        "items": [
+            {
+                "name": "Passion Fruit Blast",
+                "price": "\u20b9160",
+                "desc": "Intense passion fruit flavored iced drink.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Cappuccino",
+                "price": "\u20b9130",
+                "desc": "Classic hot coffee with frothed milk.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Cafe Latte",
+                "price": "\u20b9140",
+                "desc": "Smooth hot coffee with steamed milk.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Americano",
+                "price": "\u20b9100",
+                "desc": "Rich espresso with hot water.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Cafe Mocha",
+                "price": "\u20b9150",
+                "desc": "Espresso with chocolate and steamed milk.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Expresso Shot",
+                "price": "\u20b970",
+                "desc": "Pure intense coffee hit.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Coffee of Day",
+                "price": "\u20b960",
+                "desc": "Our special brewed coffee for today.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Ginger Tea",
+                "price": "\u20b925",
+                "desc": "Authentic Indian ginger brew.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            }
+        ]
+    },
+    {
+        "title": "Beverages (5)",
+        "legend": "",
+        "type": "menu",
+        "items": [
+            {
+                "name": "Cardmom Tea",
+                "price": "\u20b930",
+                "desc": "Fragrant cardamom infused Indian tea.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Chocholate Tea",
+                "price": "\u20b950",
+                "desc": "Rich chocolate flavored tea.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Black Tea",
+                "price": "\u20b920",
+                "desc": "Classic pure black tea.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Masala Tea",
+                "price": "\u20b930",
+                "desc": "Spiced aromatic Indian tea.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            },
+            {
+                "name": "Green Tea",
+                "price": "\u20b950",
+                "desc": "Healthy and refreshing green tea.",
+                "featured": false,
+                "has_variants": false,
+                "variant_type": null
+            }
+        ]
+    }
+];
+    
+    let currentPagePair = 0;
+
+    function renderPages() {
+        const book = document.getElementById("book");
+        const isMobile = window.innerWidth <= 768;
+
+        if (isMobile) {
+            let fullHtml = '';
+            menuData.forEach((data) => {
+                fullHtml += '<div class="page"><div class="page-content active">' + renderPageContent(data) + '</div></div>';
+            });
+            // Closing page
+            fullHtml += '<div class="page"><div class="page-content active" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: rgba(255,255,255,0.4); font-size: 0.8rem;"><p>FOLLOW US @ALESSIOSCAFE</p><p style="margin-top: 10px;">OPEN DAILY 08:00 — 18:00</p></div></div>';
+            book.innerHTML = fullHtml;
+            return;
+        }
+
+        // Desktop two-page rendering
+        book.innerHTML = `
+            <div class="page page-left">
+                <button class="nav-btn" id="prev-btn" onclick="prevPage()">&larr; Previous</button>
+                <div id="left-content" class="page-content active"></div>
+            </div>
+            <div class="page page-right">
+                <button class="nav-btn" id="next-btn" onclick="nextPage()">Next &rarr;</button>
+                <div id="right-content" class="page-content active"></div>
+            </div>
+        `;
+
+        const leftContent = document.getElementById("left-content");
+        const rightContent = document.getElementById("right-content");
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+
+        const leftIdx = currentPagePair * 2;
+        const rightIdx = leftIdx + 1;
+
+        if (leftIdx < menuData.length) {
+            leftContent.innerHTML = renderPageContent(menuData[leftIdx]);
+        }
+        if (rightIdx < menuData.length) {
+            rightContent.innerHTML = renderPageContent(menuData[rightIdx]);
+        } else {
+            rightContent.innerHTML = '<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: var(--muted); font-size: 0.8rem;"><p>FOLLOW US @ALESSIOSCAFE</p><p style="margin-top: 10px;">OPEN DAILY 08:00 — 18:00</p></div>';
+        }
+
+        prevBtn.disabled = currentPagePair === 0;
+        nextBtn.disabled = rightIdx >= menuData.length - 1;
+    }
+    
+
+    function renderPageContent(data) {
+        var html = '<h2 class="section-title">' + data.title + "</h2>";
+        html += '<div class="price-legend">' + (data.legend || "") + "</div>";
+        
+        data.items.forEach(function(item) {
+            html += '<div class="menu-item">' +
+                        '<div class="item-header">' +
+                            '<span class="item-name">' + item.name + (item.featured ? ' <span class="featured-tag">Special</span>' : "") + "</span>" +
+                            '<span class="item-price">' + item.price + "</span>" +
+                        "</div>" +
+                        '<p class="item-desc">' + item.desc + "</p>" +
+                    "</div>";
+        });
+        return html;
+    }
+
+    function nextPage() {
+        if ((currentPagePair * 2) + 2 < menuData.length + (menuData.length % 2 === 0 ? 0 : 1)) {
+            currentPagePair++;
+            renderPages();
+        }
+    }
+
+    function prevPage() {
+        if (currentPagePair > 0) {
+            currentPagePair--;
+            renderPages();
+        }
+    }
+
+    renderPages();
+</script>
+
+</body>
+</html>

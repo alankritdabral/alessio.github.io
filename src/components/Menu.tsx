@@ -37,7 +37,7 @@ const Menu = ({ isOrdering = true }: MenuProps) => {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get('category') || '';
   
-  const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const [activeCategory, setActiveCategory] = useState(initialCategory || 'Pizza');
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -57,9 +57,14 @@ const Menu = ({ isOrdering = true }: MenuProps) => {
       if (error) throw error;
 
       if (data) {
-        setProducts(data);
-        if (data.length > 0) {
-          setActiveCategory(prev => prev || initialCategory || data[0].category);
+        // Filter out placeholder/new menu items that haven't been properly configured
+        const filteredData = data.filter(item => 
+          item.name !== 'New Menu Item' && 
+          item.description !== 'Enter description here'
+        );
+        setProducts(filteredData);
+        if (filteredData.length > 0) {
+          setActiveCategory(prev => prev || initialCategory || filteredData[0].category);
         }
       }
     } catch (err) {

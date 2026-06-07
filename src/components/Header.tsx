@@ -30,6 +30,7 @@ const Header = () => {
           <ul>
             <li><Link href="/" onClick={() => handleNavClick('/')}>Home</Link></li>
             <li><Link href="/about" onClick={() => handleNavClick('/about')}>Our Story</Link></li>
+            <li><Link href="/#walkthrough" onClick={() => handleNavClick('/#walkthrough')}>Tour</Link></li>
             <li><Link href="/menu" onClick={() => handleNavClick('/menu')}>Menu</Link></li>
             <li><Link href="/contact" onClick={() => handleNavClick('/contact')}>Events & Booking</Link></li>
             <li><Link href="/locations" onClick={() => handleNavClick('/locations')}>Contact</Link></li>

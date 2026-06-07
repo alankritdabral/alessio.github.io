@@ -1,0 +1,66 @@
+.subtitle {
+  font-size: 1.125rem;
+  color: var(--muted);
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.playerWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  background-color: var(--secondary);
+  border: 1px solid var(--border);
+  margin-top: 1rem;
+}
+
+.iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* Tablet Optimization */
+@media (max-width: 1024px) {
+  .playerWrapper {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+  .playerWrapper {
+    aspect-ratio: 3 / 4; /* Better for vertical mobile viewing */
+    border-radius: var(--radius);
+    max-height: 80vh;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+    padding: 0 1rem;
+  }
+}
+
+/* Small Mobile Optimization */
+@media (max-width: 480px) {
+  .playerWrapper {
+    aspect-ratio: 9 / 16; /* Full height feel on small phones */
+    max-height: 70vh;
+  }
+}
+
+/* Hover effects for desktop */
+@media (min-width: 1025px) {
+  .playerWrapper {
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+  
+  .playerWrapper:hover {
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+  }
+}
