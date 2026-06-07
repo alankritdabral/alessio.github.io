@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './Walkthrough.module.css';
+import { assetPath } from '@/lib/assets';
 
 const Walkthrough = () => {
   return (
@@ -12,7 +13,7 @@ const Walkthrough = () => {
         </div>
         <div className={styles.playerWrapper}>
           <iframe
-            src="/walkthrough/player.html"
+            src={assetPath('/walkthrough/player.html')}
             className={styles.iframe}
             title="Virtual Tour"
             allowFullScreen
