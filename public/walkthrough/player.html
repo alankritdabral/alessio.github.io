@@ -182,6 +182,18 @@
         fetch('tour_config.json')
             .then(response => response.json())
             .then(data => {
+                // Determine base path for images
+                const pathParts = window.location.pathname.split('/');
+                pathParts.pop(); // remove player.html
+                const basePath = pathParts.join('/') + '/';
+                
+                // Prepend base path to panorama images if they are relative
+                for (let sceneId in data.scenes) {
+                    if (data.scenes[sceneId].panorama && !data.scenes[sceneId].panorama.startsWith('http') && !data.scenes[sceneId].panorama.startsWith('/')) {
+                        data.scenes[sceneId].panorama = basePath + data.scenes[sceneId].panorama;
+                    }
+                }
+                
                 tourData = data;
                 initTour(data);
             })
