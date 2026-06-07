@@ -267,13 +267,73 @@
             }
             .nav-btn { display: none !important; }
         }
-        </style>
+        
+        /* Slider Layout for ALL devices */
+        .book {
+            display: flex !important;
+            flex-direction: row !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory !important;
+            -webkit-overflow-scrolling: touch !important;
+            cursor: grab;
+            user-select: none;
+        }
+        .book:active {
+            cursor: grabbing;
+        }
+        .book::-webkit-scrollbar {
+            display: none;
+        }
+        .book::before { display: none !important; }
+        
+        .page {
+            flex: 0 0 100% !important;
+            width: 100% !important;
+            scroll-snap-align: start !important;
+            border: none !important;
+            box-sizing: border-box !important;
+            padding: 40px 60px !important;
+            background: transparent !important;
+        }
+
+        /* Desktop Arrows for Slider */
+        .slider-nav {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+            backdrop-filter: blur(8px);
+        }
+        .slider-nav:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        .slider-nav.prev { left: 10px; }
+        .slider-nav.next { right: 10px; }
+        
+        @media (max-width: 768px) {
+            .slider-nav { display: none !important; }
+            .page { padding: 60px 25px 40px 25px !important; }
+        }
+    
+    </style>
 
 </head>
 <body>
 
 <div class="book-container">
-    <div class="book" id="book">
+    <div class="slider-nav prev" onclick="moveSlider(-1)">&larr;</div><div class="slider-nav next" onclick="moveSlider(1)">&rarr;</div><div class="book" id="book">
         <!-- Left Page -->
         <div class="page page-left">
             <button class="nav-btn" id="prev-btn" onclick="prevPage()">&larr; Previous</button>
@@ -1217,77 +1277,55 @@
     }
 ];
     
-    let currentPagePair = 0;
-
+    
     function renderPages() {
         const book = document.getElementById("book");
-        const isMobile = window.innerWidth <= 768;
+        let fullHtml = '';
+        menuData.forEach((data) => {
+            fullHtml += '<div class="page"><div class="page-content active">' + renderPageContent(data) + '</div></div>';
+        });
+        // Closing page
+        fullHtml += '<div class="page"><div class="page-content active" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: rgba(255,255,255,0.4); font-size: 0.8rem;"><p>FOLLOW US @ALESSIOSCAFE</p><p style="margin-top: 10px;">OPEN DAILY 08:00 — 18:00</p></div></div>';
+        book.innerHTML = fullHtml;
+        initDragScroll();
+    }
 
-        if (isMobile) {
-            let fullHtml = '';
-            menuData.forEach((data) => {
-                fullHtml += '<div class="page"><div class="page-content active">' + renderPageContent(data) + '</div></div>';
-            });
-            // Closing page
-            fullHtml += '<div class="page"><div class="page-content active" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: rgba(255,255,255,0.4); font-size: 0.8rem;"><p>FOLLOW US @ALESSIOSCAFE</p><p style="margin-top: 10px;">OPEN DAILY 08:00 — 18:00</p></div></div>';
-            book.innerHTML = fullHtml;
-            return;
-        }
+    function moveSlider(direction) {
+        const book = document.getElementById("book");
+        const scrollAmount = book.clientWidth;
+        book.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+    }
 
-        // Desktop two-page rendering
-        book.innerHTML = `
-            <div class="page page-left">
-                <button class="nav-btn" id="prev-btn" onclick="prevPage()">&larr; Previous</button>
-                <div id="left-content" class="page-content active"></div>
-            </div>
-            <div class="page page-right">
-                <button class="nav-btn" id="next-btn" onclick="nextPage()">Next &rarr;</button>
-                <div id="right-content" class="page-content active"></div>
-            </div>
-        `;
+    function initDragScroll() {
+        const slider = document.getElementById('book');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
 
-        const leftContent = document.getElementById("left-content");
-        const rightContent = document.getElementById("right-content");
-        const prevBtn = document.getElementById("prev-btn");
-        const nextBtn = document.getElementById("next-btn");
-
-        const leftIdx = currentPagePair * 2;
-        const rightIdx = leftIdx + 1;
-
-        if (leftIdx < menuData.length) {
-            leftContent.innerHTML = renderPageContent(menuData[leftIdx]);
-        }
-        if (rightIdx < menuData.length) {
-            rightContent.innerHTML = renderPageContent(menuData[rightIdx]);
-        } else {
-            rightContent.innerHTML = '<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: var(--muted); font-size: 0.8rem;"><p>FOLLOW US @ALESSIOSCAFE</p><p style="margin-top: 10px;">OPEN DAILY 08:00 — 18:00</p></div>';
-        }
-
-        prevBtn.disabled = currentPagePair === 0;
-        nextBtn.disabled = rightIdx >= menuData.length - 1;
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.style.cursor = 'grabbing';
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+        slider.addEventListener('mouseleave', () => {
+            isDown = false;
+            slider.style.cursor = 'grab';
+        });
+        slider.addEventListener('mouseup', () => {
+            isDown = false;
+            slider.style.cursor = 'grab';
+        });
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2;
+            slider.scrollLeft = scrollLeft - walk;
+        });
     }
     
-
-    function renderPageContent(data) {
-        var html = '<h2 class="section-title">' + data.title + "</h2>";
-        html += '<div class="price-legend">' + (data.legend || "") + "</div>";
-        
-        data.items.forEach(function(item) {
-            html += '<div class="menu-item">' +
-                        '<div class="item-header">' +
-                            '<span class="item-name">' + item.name + (item.featured ? ' <span class="featured-tag">Special</span>' : "") + "</span>" +
-                            '<span class="item-price">' + item.price + "</span>" +
-                        "</div>" +
-                        '<p class="item-desc">' + item.desc + "</p>" +
-                    "</div>";
-        });
-        return html;
-    }
-
-    function nextPage() {
-        if ((currentPagePair * 2) + 2 < menuData.length + (menuData.length % 2 === 0 ? 0 : 1)) {
-            currentPagePair++;
-            renderPages();
+    renderPages();
         }
     }
 
