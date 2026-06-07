@@ -34,8 +34,17 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        /* Pseudo-fullscreen for iOS */
+        .pseudo-fullscreen {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 99999 !important;
+        }
+        
         /* Hotspot Styling */
-
         .walking-hotspot {
             height: 36px; width: 36px;
             background: rgba(255, 255, 255, 0.2);
@@ -155,29 +164,48 @@
         let viewer = null;
         let tourData = null;
 
-        let isFullscreen = false;
-
         function toggleFullscreen() {
-            isFullscreen = !isFullscreen;
-            const message = isFullscreen ? 'enterFullscreen' : 'exitFullscreen';
-            window.parent.postMessage(message, '*');
-            
+            const wrapper = document.getElementById('tour-wrapper');
             const btn = document.getElementById('fullscreen-btn');
-            btn.innerHTML = isFullscreen ? 
-                '<i data-lucide="minimize"></i><span>Exit</span>' : 
-                '<i data-lucide="maximize"></i><span>Fullscreen</span>';
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+            if (!document.fullscreenElement && !wrapper.classList.contains('pseudo-fullscreen')) {
+                if (wrapper.requestFullscreen) {
+                    wrapper.requestFullscreen().catch(err => {
+                        console.log("Fullscreen API failed, falling back to pseudo-fullscreen");
+                        wrapper.classList.add('pseudo-fullscreen');
+                    });
+                } else if (wrapper.webkitRequestFullscreen) { /* Safari */
+                    wrapper.webkitRequestFullscreen();
+                } else {
+                    wrapper.classList.add('pseudo-fullscreen');
+                }
+                btn.innerHTML = '<i data-lucide="minimize"></i><span>Exit</span>';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+                wrapper.classList.remove('pseudo-fullscreen');
+                btn.innerHTML = '<i data-lucide="maximize"></i><span>Fullscreen</span>';
+            }
+            setTimeout(lucide.createIcons, 100);
+        }
+
+        function handleFullscreenChange() {
+            const wrapper = document.getElementById('tour-wrapper');
+            const btn = document.getElementById('fullscreen-btn');
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && !wrapper.classList.contains('pseudo-fullscreen')) {
+                btn.innerHTML = '<i data-lucide="maximize"></i><span>Fullscreen</span>';
+            } else {
+                btn.innerHTML = '<i data-lucide="minimize"></i><span>Exit</span>';
+            }
             lucide.createIcons();
         }
 
-        // Listen for escape key or other exit triggers from parent
-        window.addEventListener('message', (event) => {
-            if (event.data === 'syncExitFullscreen') {
-                isFullscreen = false;
-                const btn = document.getElementById('fullscreen-btn');
-                btn.innerHTML = '<i data-lucide="maximize"></i><span>Fullscreen</span>';
-                lucide.createIcons();
-            }
-        });
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 
         fetch('tour_config.json')
             .then(response => response.json())
