@@ -323,8 +323,19 @@
         .slider-nav.next { right: 10px; }
         
         @media (max-width: 768px) {
-            .slider-nav { display: none !important; }
-            .page { padding: 60px 25px 40px 25px !important; }
+            
+            .slider-nav { 
+                display: flex !important; 
+                width: 32px !important; 
+                height: 32px !important; 
+                font-size: 14px !important;
+                background: rgba(0,0,0,0.5) !important;
+                border: 1px solid rgba(255,255,255,0.3) !important;
+            }
+            .slider-nav.prev { left: 5px !important; }
+            .slider-nav.next { right: 5px !important; }
+    
+            .page { padding: 60px 35px 40px 35px !important; }
         }
     
     </style>
