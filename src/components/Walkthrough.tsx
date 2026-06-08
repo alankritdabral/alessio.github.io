@@ -5,6 +5,8 @@ import { assetPath } from '@/lib/assets';
 const Walkthrough = () => {
   return (
     <section className="section" id="walkthrough">
+      {/* Silently preload the first heavy 360 image in the background with low priority */}
+      <link rel="preload" href={assetPath('/walkthrough/images/1.jpg')} as="image" />
       <div className="container">
         <div className="text-center mb-4">
           <span className="section-subtitle">Virtual Tour</span>
