@@ -1278,6 +1278,23 @@
 ];
     
     
+    
+    function renderPageContent(data) {
+        var html = '<h2 class="section-title">' + data.title + "</h2>";
+        html += '<div class="price-legend">' + (data.legend || "") + "</div>";
+        
+        data.items.forEach(function(item) {
+            html += '<div class="menu-item">' +
+                        '<div class="item-header">' +
+                            '<span class="item-name">' + item.name + (item.featured ? ' <span class="featured-tag">Special</span>' : "") + "</span>" +
+                            '<span class="item-price">' + item.price + "</span>" +
+                        "</div>" +
+                        '<p class="item-desc">' + item.desc + "</p>" +
+                    "</div>";
+        });
+        return html;
+    }
+    
     function renderPages() {
         const book = document.getElementById("book");
         let fullHtml = '';
